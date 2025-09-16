@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alison Media Shopping Mall</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#ffffff;--accent:#3b82f6;--muted:#6b7280}
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:var(--bg); color:#111}
+    header{background:linear-gradient(90deg,#111827,#1f2937);color:white;padding:28px 20px}
+    .container{max-width:1100px;margin:20px auto;padding:0 18px}
+    h1{margin:0;font-size:28px}
+    .tagline, .contact{color:rgba(255,255,255,0.85);margin-top:6px;font-size:14px}
+    .search{margin-top:14px}
+    .search input{width:100%;padding:10px 14px;border-radius:8px;border:0;outline:none}
+    nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+    nav button{background:var(--card);border-radius:999px;padding:8px 12px;border:1px solid #e6e9ee;cursor:pointer}
+    section.category{margin:28px 0}
+    .category h2{font-size:18px;margin:0 0 12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+    .card{background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,0.06);border:1px solid #eef2f6}
+    .card img{width:100%;height:140px;object-fit:cover;display:block}
+    .card .body{padding:10px}
+    .card .title{font-size:14px;margin:0 0 6px}
+    .price{font-weight:600}
+    .muted{color:var(--muted);font-size:13px}
+    footer{padding:20px;text-align:center;color:var(--muted);font-size:14px}
+    @media (min-width:900px){header{padding:36px 20px} .container{max-width:1200px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Alison Media Shopping Mall</h1>
+      <div class="tagline">A curated marketplace — music, gadgets, food, gaming, and more. Prices in UGX.</div>
+      <div class="contact">Email: alisonolupot@hotmail.com | Contact: 0740328372</div>
+      <div class="search"><input id="searchInput" placeholder="Search items, categories or prices (UGX)" /></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav id="categoryNav"></nav>
+    <div id="sections"></div>
+  </main>
+
+  <footer>© <strong>Alison Media Shopping Mall</strong> — Prices are sample values in UGX.</footer>
+
+  <script>
+    const categories = {
+      "Musical": ["Piano","Guitar","Drum","Xylophone","Trumpet"],
+      "Gadgets": ["Laptop","Tablet","Smartwatch","Drone","Speakers"],
+      "Food Stuff": ["Rice","Apples","Vegetables","Juice","Bananas"],
+      "Gaming": ["Gaming Projector","Joystick","Cooling Fan"],
+      "Utensils": ["Frying Pan","Plates","Cups","Forks","Knife"],
+      "Electronics": ["Television","Radio","Laptop","Printer","Blender"],
+      "Vehicles": ["Mercedes-Benz","Toyota","Tractor","Ambulance"],
+      "Bikes": ["Yamaha","Suzuki","Mountain Bike","Road Bike"],
+      "Clothing": ["T-shirts","Blouses","Jeans","Jackets","Skirts"],
+      "Books": ["Novel","Textbook","Storybook","Bible"],
+      "Shoes": ["Sneaker","Heels","Boots","Sandals"],
+      "Laundry": ["Dryer","Bleach","Washing Brush","Clothes Hanger"],
+      "Lotions": ["Nivea","Vaseline","Gel"],
+      "Plates": ["Dinner Plates","Glass Plates","Plastic Plates"],
+      "Bags": ["Laptop Bag","Crossbag"]
+    };
+
+    const priceRanges = {
+      "Musical": [80000, 1200000],"Gadgets":[50000,1500000],"Food Stuff":[2000,60000],"Gaming":[40000,800000],
+      "Utensils":[3000,50000],"Electronics":[40000,3000000],"Vehicles":[3000000,60000000],"Bikes":[400000,25000000],
+      "Clothing":[10000,150000],"Books":[3000,50000],"Shoes":[20000,250000],"Laundry":[15000,300000],
+      "Lotions":[5000,60000],"Plates":[2000,25000],"Bags":[15000,500000]
+    };
+
+    const container = document.getElementById('sections');
+    const nav = document.getElementById('categoryNav');
+
+    function formatUGX(n){return 'UGX ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');}
+
+    Object.keys(categories).forEach(cat=>{
+      const btn=document.createElement('button'); btn.textContent=cat;
+      btn.onclick=()=>{document.getElementById('cat-'+cat.replace(/\s+/g,'-')).scrollIntoView({behavior:'smooth'});};
+      nav.appendChild(btn);
+    });
+
+    Object.entries(categories).forEach(([cat,items])=>{
+      const sec=document.createElement('section'); sec.className='category'; sec.id='cat-'+cat.replace(/\s+/g,'-');
+      const h2=document.createElement('h2'); h2.textContent=cat; sec.appendChild(h2);
+      const grid=document.createElement('div'); grid.className='grid';
+      const [minP,maxP]=priceRanges[cat]||[5000,500000];
+
+      items.forEach((item,idx)=>{
+        const card=document.createElement('article'); card.className='card';
+        const img=document.createElement('img');
+        img.src=`https://picsum.photos/seed/${encodeURIComponent(cat+item)}/400/300`;
+        img.alt=item; card.appendChild(img);
+
+        const body=document.createElement('div'); body.className='body';
+        const title=document.createElement('div'); title.className='title'; title.textContent=item;
+        const price=document.createElement('div'); price.className='price'; price.textContent=formatUGX(Math.floor(Math.random()*(maxP-minP+1)+minP));
+        const meta=document.createElement('div'); meta.className='muted'; meta.textContent='In stock';
+        body.appendChild(title); body.appendChild(price); body.appendChild(meta); card.appendChild(body); grid.appendChild(card);
+      });
+      sec.appendChild(grid); container.appendChild(sec);
+    });
+
+    document.getElementById('searchInput').addEventListener('input',e=>{
+      const q=e.target.value.trim().toLowerCase();
+      document.querySelectorAll('.card').forEach(card=>{
+        const title=card.querySelector('.title').textContent.toLowerCase();
+        const price=card.querySelector('.price').textContent.toLowerCase();
+        card.style.display=(title.includes(q)||price.includes(q))?'block':'none';
+      });
+    });
+  </script>
+</body>
+</html>
